@@ -7,6 +7,7 @@ import j3 from "@/assets/couple-6.jpg";
 import j4 from "@/assets/couple-4.jpg";
 import closing from "@/assets/couple-1.jpg";
 import { useReveal } from "@/hooks/use-reveal";
+import { useAutoScroll } from "@/hooks/use-auto-scroll";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -76,6 +77,7 @@ type Blessing = { name: string; message: string };
 
 function Index() {
   useReveal();
+  useAutoScroll(0.6);
   const [blessings, setBlessings] = useState<Blessing[]>([
     { name: "Aanya", message: "May your forever be as effortless as your glance." },
     { name: "Vikram", message: "Two souls, one beautiful release. Cheers, forever." },
