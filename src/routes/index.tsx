@@ -7,6 +7,7 @@ import j3 from "@/assets/couple-6.jpg";
 import j4 from "@/assets/couple-4.jpg";
 import closing from "@/assets/couple-1.jpg";
 import { useReveal } from "@/hooks/use-reveal";
+import { useAutoScroll } from "@/hooks/use-auto-scroll";
 
 export const Route = createFileRoute("/")({
   head: () => ({
