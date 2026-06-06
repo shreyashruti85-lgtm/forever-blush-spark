@@ -2,37 +2,56 @@ import { useEffect, useRef } from "react";
 
 export function useAutoScroll(speed = 0.5) {
   const rafRef = useRef<number>(0);
-  const pausedRef = useRef(false);
+  const pausedUntilRef = useRef(0);
 
   useEffect(() => {
-    const pause = () => (pausedRef.current = true);
-    const resume = () => (pausedRef.current = false);
+    // Only pause on real scroll gestures, not clicks/taps (the music player
+    // needs a click to start, which shouldn't kill auto-scroll forever).
+    const pauseFor = (ms: number) => {
+      pausedUntilRef.current = performance.now() + ms;
+    };
+    const onWheel = () => pauseFor(4000);
+    const onTouchMove = () => pauseFor(4000);
+    const onKey = (e: KeyboardEvent) => {
+      if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(e.key)) {
+        pauseFor(4000);
+      }
+    };
 
-    window.addEventListener("pointerdown", pause, { passive: true });
-    window.addEventListener("wheel", pause, { passive: true });
-    window.addEventListener("touchstart", pause, { passive: true });
-    window.addEventListener("keydown", pause, { passive: true });
-
-    const resumeTimer = setTimeout(resume, 3000);
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("keydown", onKey, { passive: true });
 
     let last = performance.now();
+    let direction: 1 | -1 = 1;
+    let restTimer: ReturnType<typeof setTimeout> | null = null;
+
     const step = (now: number) => {
-      const dt = now - last;
+      const dt = Math.min(now - last, 64);
       last = now;
-      if (!pausedRef.current) {
+
+      if (now >= pausedUntilRef.current && !restTimer) {
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        if (window.scrollY < maxScroll - 2) {
-          window.scrollBy(0, (speed * dt) / 16);
+        const delta = (speed * dt) / 16;
+
+        if (direction === 1) {
+          if (window.scrollY < maxScroll - 1) {
+            window.scrollBy(0, delta);
+          } else {
+            restTimer = setTimeout(() => {
+              direction = -1;
+              restTimer = null;
+            }, 2000);
+          }
         } else {
-          // At bottom: pause briefly then smooth-scroll back to top
-          pausedRef.current = true;
-          setTimeout(() => {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            setTimeout(() => {
-              pausedRef.current = false;
-              last = performance.now();
-            }, 1200);
-          }, 2000);
+          if (window.scrollY > 1) {
+            window.scrollBy(0, -delta);
+          } else {
+            restTimer = setTimeout(() => {
+              direction = 1;
+              restTimer = null;
+            }, 2000);
+          }
         }
       }
       rafRef.current = requestAnimationFrame(step);
@@ -41,16 +60,15 @@ export function useAutoScroll(speed = 0.5) {
     const delay = setTimeout(() => {
       last = performance.now();
       rafRef.current = requestAnimationFrame(step);
-    }, 4000);
+    }, 3500);
 
     return () => {
       clearTimeout(delay);
-      clearTimeout(resumeTimer);
+      if (restTimer) clearTimeout(restTimer);
       cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("pointerdown", pause);
-      window.removeEventListener("wheel", pause);
-      window.removeEventListener("touchstart", pause);
-      window.removeEventListener("keydown", pause);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("keydown", onKey);
     };
   }, [speed]);
 }
