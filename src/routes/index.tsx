@@ -77,6 +77,7 @@ type Blessing = { name: string; message: string };
 
 function Index() {
   useReveal();
+  useAutoScroll(0.6);
   const [blessings, setBlessings] = useState<Blessing[]>([
     { name: "Aanya", message: "May your forever be as effortless as your glance." },
     { name: "Vikram", message: "Two souls, one beautiful release. Cheers, forever." },
