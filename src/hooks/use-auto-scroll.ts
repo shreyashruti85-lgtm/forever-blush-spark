@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export function useAutoScroll(speed = 0.5) {
+export function useAutoScroll(pixelsPerSecond = 90) {
   const rafRef = useRef<number>(0);
   const pausedUntilRef = useRef(0);
 
@@ -23,35 +23,25 @@ export function useAutoScroll(speed = 0.5) {
     window.addEventListener("keydown", onKey, { passive: true });
 
     let last = performance.now();
-    let direction: 1 | -1 = 1;
-    let restTimer: ReturnType<typeof setTimeout> | null = null;
+    let restartTimer: ReturnType<typeof setTimeout> | null = null;
 
     const step = (now: number) => {
       const dt = Math.min(now - last, 64);
       last = now;
 
-      if (now >= pausedUntilRef.current && !restTimer) {
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        const delta = (speed * dt) / 16;
+      if (now >= pausedUntilRef.current && !restartTimer) {
+        const scrollingElement = document.scrollingElement ?? document.documentElement;
+        const maxScroll = scrollingElement.scrollHeight - window.innerHeight;
+        const delta = (pixelsPerSecond * dt) / 1000;
 
-        if (direction === 1) {
-          if (window.scrollY < maxScroll - 1) {
-            window.scrollBy(0, delta);
-          } else {
-            restTimer = setTimeout(() => {
-              direction = -1;
-              restTimer = null;
-            }, 2000);
-          }
+        if (window.scrollY < maxScroll - 1) {
+          window.scrollBy({ top: delta, behavior: "auto" });
         } else {
-          if (window.scrollY > 1) {
-            window.scrollBy(0, -delta);
-          } else {
-            restTimer = setTimeout(() => {
-              direction = 1;
-              restTimer = null;
-            }, 2000);
-          }
+          restartTimer = setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            pausedUntilRef.current = performance.now() + 2500;
+            restartTimer = null;
+          }, 2500);
         }
       }
       rafRef.current = requestAnimationFrame(step);
@@ -60,15 +50,15 @@ export function useAutoScroll(speed = 0.5) {
     const delay = setTimeout(() => {
       last = performance.now();
       rafRef.current = requestAnimationFrame(step);
-    }, 3500);
+    }, 1200);
 
     return () => {
       clearTimeout(delay);
-      if (restTimer) clearTimeout(restTimer);
+      if (restartTimer) clearTimeout(restartTimer);
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("keydown", onKey);
     };
-  }, [speed]);
+  }, [pixelsPerSecond]);
 }
