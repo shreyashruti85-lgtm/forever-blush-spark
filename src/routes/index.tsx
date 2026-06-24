@@ -168,8 +168,28 @@ function Index() {
         </div>
       </section>
 
-      <section className="border-y border-border/60 bg-ivory">
-        <div className="max-w-6xl mx-auto px-8 py-10 grid grid-cols-4 gap-6 text-center">
+      <section className="relative border-y border-border/60 bg-ivory overflow-hidden">
+        {/* Firecracker bursts */}
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          {[
+            { top: "12%", left: "8%", delay: "0s", hue: "var(--gold)" },
+            { top: "20%", left: "82%", delay: "1.4s", hue: "var(--blush)" },
+            { top: "65%", left: "18%", delay: "2.6s", hue: "var(--blush)" },
+            { top: "55%", left: "70%", delay: "3.8s", hue: "var(--gold)" },
+            { top: "30%", left: "48%", delay: "5s", hue: "var(--gold)" },
+          ].map((b, i) => (
+            <span
+              key={i}
+              className="firecracker"
+              style={{ top: b.top, left: b.left, animationDelay: b.delay, ["--hue" as never]: b.hue }}
+            >
+              {Array.from({ length: 12 }).map((_, j) => (
+                <span key={j} style={{ ["--a" as never]: `${j * 30}deg`, animationDelay: b.delay }} />
+              ))}
+            </span>
+          ))}
+        </div>
+        <div className="relative max-w-6xl mx-auto px-8 py-10 grid grid-cols-4 gap-6 text-center">
           {[
             ["Days", count.d],
             ["Hours", count.h],
