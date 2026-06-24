@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
 const dashboard = [
   { label: "First Encounter", value: "August 2018" },
   { label: "Official Release", value: "4 May 2019" },
-  { label: "Best Birthday Ever", value: "Best Day 2026" },
+  { label: "Best Day 2026", value: "3rd May 2026" },
   { label: "Wedding Launch", value: "27 June 2026" },
   { label: "Relationship Version", value: "v7.0" },
   { label: "Compatibility", value: "99.9%" },
