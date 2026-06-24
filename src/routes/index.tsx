@@ -336,7 +336,7 @@ function Index() {
           </form>
           <div className="grid md:grid-cols-2 gap-6">
             {blessings.map((b, i) => (
-              <div key={i} className="reveal bg-card border border-border/60 rounded-2xl p-8 shadow-card">
+              <div key={i} className="reveal in bg-card border border-border/60 rounded-2xl p-8 shadow-card">
                 <p className="font-serif italic text-xl leading-relaxed">&ldquo;{b.message}&rdquo;</p>
                 <p className="mt-6 text-xs tracking-luxury uppercase text-gold">— {b.name}</p>
               </div>
