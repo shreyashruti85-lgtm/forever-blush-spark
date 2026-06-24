@@ -122,4 +122,56 @@
     50% { transform: translateY(-8px); }
   }
   .float-slow { animation: float-slow 6s ease-in-out infinite; }
+
+  /* Halo around the hidden-file button */
+  .halo-btn .halo-ring {
+    position: absolute; inset: -8px; border-radius: 9999px;
+    background: conic-gradient(from 0deg,
+      color-mix(in oklab, var(--gold) 0%, transparent),
+      color-mix(in oklab, var(--gold) 70%, transparent),
+      color-mix(in oklab, var(--blush) 60%, transparent),
+      color-mix(in oklab, var(--gold) 0%, transparent));
+    filter: blur(8px);
+    opacity: 0.75;
+    animation: halo-spin 4s linear infinite;
+    z-index: 0;
+  }
+  .halo-btn .halo-orbit {
+    position: absolute; inset: -6px; border-radius: 9999px;
+    animation: halo-spin 3.2s linear infinite;
+    z-index: 1;
+  }
+  .halo-btn .halo-orbit > span {
+    position: absolute; top: 50%; left: -4px;
+    width: 8px; height: 8px; border-radius: 9999px;
+    background: var(--gold);
+    transform: translateY(-50%);
+    box-shadow: 0 0 14px 3px color-mix(in oklab, var(--gold) 70%, transparent);
+  }
+  @keyframes halo-spin { to { transform: rotate(360deg); } }
+
+  /* Firecracker bursts around the countdown */
+  .firecracker {
+    position: absolute; width: 0; height: 0;
+    animation: cracker-burst 6s ease-out infinite;
+  }
+  .firecracker > span {
+    position: absolute; left: 0; top: 0;
+    width: 4px; height: 4px; border-radius: 9999px;
+    background: var(--hue, var(--gold));
+    box-shadow: 0 0 8px 2px color-mix(in oklab, var(--hue, var(--gold)) 70%, transparent);
+    transform: rotate(var(--a)) translateX(0);
+    opacity: 0;
+    animation: cracker-particle 6s ease-out infinite;
+  }
+  @keyframes cracker-burst {
+    0%, 100% { opacity: 0; }
+    5%, 30% { opacity: 1; }
+  }
+  @keyframes cracker-particle {
+    0%, 8% { transform: rotate(var(--a)) translateX(0) scale(0.4); opacity: 0; }
+    10% { opacity: 1; }
+    35% { transform: rotate(var(--a)) translateX(46px) scale(1); opacity: 0.9; }
+    55%, 100% { transform: rotate(var(--a)) translateX(60px) scale(0.2); opacity: 0; }
+  }
 }

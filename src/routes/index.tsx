@@ -168,8 +168,28 @@ function Index() {
         </div>
       </section>
 
-      <section className="border-y border-border/60 bg-ivory">
-        <div className="max-w-6xl mx-auto px-8 py-10 grid grid-cols-4 gap-6 text-center">
+      <section className="relative border-y border-border/60 bg-ivory overflow-hidden">
+        {/* Firecracker bursts */}
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          {[
+            { top: "12%", left: "8%", delay: "0s", hue: "var(--gold)" },
+            { top: "20%", left: "82%", delay: "1.4s", hue: "var(--blush)" },
+            { top: "65%", left: "18%", delay: "2.6s", hue: "var(--blush)" },
+            { top: "55%", left: "70%", delay: "3.8s", hue: "var(--gold)" },
+            { top: "30%", left: "48%", delay: "5s", hue: "var(--gold)" },
+          ].map((b, i) => (
+            <span
+              key={i}
+              className="firecracker"
+              style={{ top: b.top, left: b.left, animationDelay: b.delay, ["--hue" as never]: b.hue }}
+            >
+              {Array.from({ length: 12 }).map((_, j) => (
+                <span key={j} style={{ ["--a" as never]: `${j * 30}deg`, animationDelay: b.delay }} />
+              ))}
+            </span>
+          ))}
+        </div>
+        <div className="relative max-w-6xl mx-auto px-8 py-10 grid grid-cols-4 gap-6 text-center">
           {[
             ["Days", count.d],
             ["Hours", count.h],
@@ -316,7 +336,7 @@ function Index() {
           </form>
           <div className="grid md:grid-cols-2 gap-6">
             {blessings.map((b, i) => (
-              <div key={i} className="reveal bg-card border border-border/60 rounded-2xl p-8 shadow-card">
+              <div key={i} className="reveal in bg-card border border-border/60 rounded-2xl p-8 shadow-card">
                 <p className="font-serif italic text-xl leading-relaxed">&ldquo;{b.message}&rdquo;</p>
                 <p className="mt-6 text-xs tracking-luxury uppercase text-gold">— {b.name}</p>
               </div>
@@ -334,9 +354,13 @@ function Index() {
           <p className="mt-6 font-serif text-2xl">27 June 2026</p>
           <button
             onClick={() => setEasterOpen(true)}
-            className="mt-10 text-[10px] tracking-luxury uppercase text-muted-foreground hover:text-gold transition"
+            className="halo-btn relative mt-10 inline-flex items-center justify-center text-[11px] tracking-luxury uppercase text-foreground px-6 py-3 rounded-full bg-ivory/70 backdrop-blur-sm border border-gold/40 shadow-[0_8px_30px_-10px_hsl(var(--gold)/0.5)] hover:text-gold transition"
           >
-            · open hidden file ·
+            <span className="halo-ring" aria-hidden />
+            <span className="halo-orbit" aria-hidden>
+              <span />
+            </span>
+            <span className="relative">· open hidden file ·</span>
           </button>
         </div>
       </section>
