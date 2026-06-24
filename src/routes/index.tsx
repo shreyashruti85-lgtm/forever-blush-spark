@@ -354,9 +354,13 @@ function Index() {
           <p className="mt-6 font-serif text-2xl">27 June 2026</p>
           <button
             onClick={() => setEasterOpen(true)}
-            className="mt-10 text-[10px] tracking-luxury uppercase text-muted-foreground hover:text-gold transition"
+            className="halo-btn relative mt-10 inline-flex items-center justify-center text-[11px] tracking-luxury uppercase text-foreground px-6 py-3 rounded-full bg-ivory/70 backdrop-blur-sm border border-gold/40 shadow-[0_8px_30px_-10px_hsl(var(--gold)/0.5)] hover:text-gold transition"
           >
-            · open hidden file ·
+            <span className="halo-ring" aria-hidden />
+            <span className="halo-orbit" aria-hidden>
+              <span />
+            </span>
+            <span className="relative">· open hidden file ·</span>
           </button>
         </div>
       </section>
